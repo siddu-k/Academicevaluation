@@ -1,1 +1,431 @@
+<!DOCTYPE html>
 
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EduTrack Pro - Assessment Portal</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        body { font-family: 'Inter', sans-serif; }
+
+        .transition-all { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        .option-btn:disabled { cursor: not-allowed; }
+
+        [v-cloak] { display: none; }
+
+    </style>
+
+</head>
+
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+
+
+
+    <div id="app" class="max-w-5xl mx-auto p-4 md:p-8">
+
+        <!-- Header -->
+
+        <header class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4 bg-white p-6 rounded-3xl shadow-sm border border-slate-200/60">
+
+            <div class="flex items-center gap-4">
+
+                <div class="bg-indigo-600 p-3 rounded-2xl shadow-xl shadow-indigo-100">
+
+                    <i data-lucide="graduation-cap" class="text-white w-7 h-7"></i>
+
+                </div>
+
+                <div>
+
+                    <h1 class="text-xl font-black text-slate-800 tracking-tight">Grade 10 Assessment</h1>
+
+                    <div class="flex items-center gap-2">
+
+                        <span id="status-dot" class="w-2 h-2 bg-yellow-400 rounded-full"></span>
+
+                        <span id="status-text" class="text-[10px] text-slate-400 font-black uppercase tracking-widest">Connecting...</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            
+
+            <div class="flex gap-2 p-1.5 bg-slate-100 rounded-2xl">
+
+                <button onclick="switchView('student')" id="nav-student" class="nav-btn px-6 py-2.5 rounded-xl transition-all text-xs font-black uppercase tracking-wider flex items-center gap-2 bg-white text-indigo-600 shadow-sm border border-slate-200/50">
+
+                    <i data-lucide="user" class="w-4 h-4"></i> Student View
+
+                </button>
+
+                <button onclick="switchView('teacher')" id="nav-teacher" class="nav-btn px-6 py-2.5 rounded-xl transition-all text-xs font-black uppercase tracking-wider flex items-center gap-2 text-slate-500 hover:text-slate-800">
+
+                    <i data-lucide="clipboard-list" class="w-4 h-4"></i> Teacher Panel
+
+                </button>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- View Containers -->
+
+        <main id="main-content">
+
+            <!-- Landing View -->
+
+            <section id="view-landing" class="view text-center py-28 bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 border border-white">
+
+                <h2 class="text-5xl font-black mb-6 text-slate-800 tracking-tighter">Academic Evaluation</h2>
+
+                <p class="text-slate-500 mb-12 max-w-lg mx-auto text-lg font-medium leading-relaxed">
+
+                    Complete the 35-question English assessment. Results are transmitted to the instructor dashboard automatically.
+
+                </p>
+
+                <div class="flex flex-col sm:flex-row justify-center gap-4 px-8">
+
+                    <button onclick="switchView('student')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-12 py-5 rounded-2xl font-black shadow-2xl shadow-indigo-200 transition-all hover:-translate-y-1">Begin Exam</button>
+
+                    <button onclick="switchView('teacher')" class="bg-white border-2 border-slate-100 hover:border-slate-200 px-12 py-5 rounded-2xl font-black text-slate-700 transition-all">Review Results</button>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- Student Form View -->
+
+            <section id="view-student-form" class="view hidden bg-white rounded-[2.5rem] shadow-2xl border border-white p-16 text-center max-w-2xl mx-auto">
+
+                <div class="mb-10 flex justify-center">
+
+                    <div class="bg-indigo-50 p-8 rounded-[2rem]">
+
+                        <i data-lucide="book-open" class="text-indigo-600 w-16 h-16"></i>
+
+                    </div>
+
+                </div>
+
+                <h3 class="text-4xl font-black mb-4 text-slate-800 tracking-tight">Ready to Start?</h3>
+
+                <p class="text-slate-400 font-medium mb-12">Total Questions: 35 | Duration: Open | Type: Multiple Choice</p>
+
+                <div class="space-y-4">
+
+                    <input type="text" id="student-name-input" placeholder="Your Full Name" class="w-full max-w-md px-8 py-5 rounded-2xl border-2 border-slate-50 bg-slate-50 focus:bg-white focus:border-indigo-500 focus:outline-none transition-all text-center text-xl font-bold placeholder:text-slate-300">
+
+                    <button onclick="startQuiz()" class="w-full max-w-md bg-indigo-600 text-white py-5 rounded-2xl font-black shadow-2xl shadow-indigo-100 hover:bg-indigo-700 transition-all">Start Evaluation</button>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- Quiz View -->
+
+            <section id="view-quiz" class="view hidden bg-white rounded-[2.5rem] shadow-2xl border border-white p-10 md:p-14">
+
+                <div class="flex justify-between items-end mb-12">
+
+                    <div>
+
+                        <span id="q-section" class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.3em] block mb-2">Section</span>
+
+                        <h4 class="text-3xl font-black text-slate-800 tracking-tight">Question <span id="q-number">1</span></h4>
+
+                    </div>
+
+                    <div class="text-right">
+
+                        <span class="text-sm font-black text-slate-300 tracking-widest"><span id="q-current-count">1</span> / 35</span>
+
+                        <div class="h-2 w-40 bg-slate-100 rounded-full mt-2 overflow-hidden border border-slate-50">
+
+                            <div id="q-progress-bar" class="h-full bg-indigo-500 transition-all duration-700 ease-out" style="width: 3%"></div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Bar Chart (Visible only for Q16-20) -->
+
+                <div id="q-chart-container" class="hidden bg-slate-50 p-6 rounded-2xl border border-slate-200 mb-6">
+
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Movie Watching Frequency</h4>
+
+                    <div class="flex items-end justify-between h-40 gap-2">
+
+                        <div class="flex-1 flex flex-col items-center gap-2"><div class="w-full rounded-t-lg bg-indigo-500" style="height: 70%"></div><span class="text-[10px] font-bold text-slate-500">Mon</span></div>
+
+                        <div class="flex-1 flex flex-col items-center gap-2"><div class="w-full rounded-t-lg bg-indigo-500" style="height: 50%"></div><span class="text-[10px] font-bold text-slate-500">Tue</span></div>
+
+                        <div class="flex-1 flex flex-col items-center gap-2"><div class="w-full rounded-t-lg bg-indigo-500" style="height: 60%"></div><span class="text-[10px] font-bold text-slate-500">Wed</span></div>
+
+                        <div class="flex-1 flex flex-col items-center gap-2"><div class="w-full rounded-t-lg bg-indigo-500" style="height: 64%"></div><span class="text-[10px] font-bold text-slate-500">Thu</span></div>
+
+                        <div class="flex-1 flex flex-col items-center gap-2"><div class="w-full rounded-t-lg bg-indigo-500" style="height: 80%"></div><span class="text-[10px] font-bold text-slate-500">Fri</span></div>
+
+                        <div class="flex-1 flex flex-col items-center gap-2"><div class="w-full rounded-t-lg bg-indigo-500" style="height: 94%"></div><span class="text-[10px] font-bold text-slate-500">Sat</span></div>
+
+                        <div class="flex-1 flex flex-col items-center gap-2"><div class="w-full rounded-t-lg bg-indigo-500" style="height: 90%"></div><span class="text-[10px] font-bold text-slate-500">Sun</span></div>
+
+                    </div>
+
+                </div>
+
+                
+
+                <div class="mb-12">
+
+                    <h2 id="q-text" class="text-2xl md:text-3xl font-bold text-slate-800 leading-[1.35] max-w-3xl">Question text goes here?</h2>
+
+                </div>
+
+
+
+                <div id="q-options" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                    <!-- Options will be injected here -->
+
+                </div>
+
+            </section>
+
+
+
+            <!-- Quiz Results View -->
+
+            <section id="view-student-finished" class="view hidden bg-white rounded-[2.5rem] shadow-2xl border border-white p-20 text-center">
+
+                <div class="relative inline-block mb-10">
+
+                    <i data-lucide="trophy" class="text-yellow-400 w-32 h-32"></i>
+
+                </div>
+
+                <h3 class="text-5xl font-black mb-6 tracking-tight">Excellent!</h3>
+
+                <p class="text-slate-500 text-xl font-medium mb-10 max-w-md mx-auto">Results for <span id="finished-name" class="text-indigo-600 font-bold">Student</span> have been safely recorded.</p>
+
+                
+
+                <div class="bg-gradient-to-br from-indigo-50 to-blue-50 px-16 py-12 rounded-[3rem] border-4 border-white shadow-xl mb-12 inline-block">
+
+                    <div id="final-score-display" class="text-8xl font-black text-indigo-600 tracking-tighter">0</div>
+
+                    <div class="text-indigo-400 font-black uppercase tracking-[0.3em] text-xs mt-4">Score Out of 35</div>
+
+                </div>
+
+                <br>
+
+                <button onclick="resetApp()" class="inline-flex items-center gap-3 bg-slate-900 text-white px-12 py-5 rounded-2xl font-black hover:bg-black transition-all shadow-xl shadow-slate-200">
+
+                    <i data-lucide="refresh-ccw" class="w-5 h-5"></i> New Candidate
+
+                </button>
+
+            </section>
+
+
+
+            <!-- Teacher Portal View -->
+
+            <section id="view-teacher" class="view hidden bg-white rounded-[2.5rem] shadow-2xl border border-white overflow-hidden">
+
+                <div class="p-10 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-8">
+
+                    <div class="flex gap-5 items-center">
+
+                        <div class="bg-indigo-50 p-4 rounded-2xl border border-indigo-100 shadow-sm">
+
+                            <i data-lucide="bar-chart-2" class="text-indigo-600 w-8 h-8"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h3 class="text-3xl font-black text-slate-800 tracking-tight">Instructor Dashboard</h3>
+
+                            <p class="text-sm text-slate-400 font-bold uppercase tracking-widest mt-1">Live Results Tracking</p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="bg-slate-900 text-white px-8 py-4 rounded-[2rem] text-sm font-black shadow-2xl shadow-slate-200 flex items-center gap-3">
+
+                        <div class="w-2 h-2 bg-indigo-400 rounded-full animate-pulse"></div>
+
+                        <span id="submission-count">0</span> Candidates Submitted
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="overflow-x-auto">
+
+                    <table class="w-full text-left">
+
+                        <thead>
+
+                            <tr class="text-slate-400 text-[10px] font-black uppercase tracking-[0.3em] bg-slate-50/40 border-b border-slate-100">
+
+                                <th class="px-12 py-6">Student Information</th>
+
+                                <th class="px-12 py-6">Marks Obtained</th>
+
+                                <th class="px-12 py-6">Status</th>
+
+                                <th class="px-12 py-6 text-right">Submission Time</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="teacher-results-body" class="divide-y divide-slate-50">
+
+                            <!-- Results will be injected here -->
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </main>
+
+
+
+        <footer class="mt-20 text-center pb-16 border-t border-slate-200/60 pt-10">
+
+            <p class="text-slate-400 font-bold uppercase tracking-[0.4em] text-[10px]">Cloud Education Portal v2.5</p>
+
+            <div id="footer-debug" class="mt-6 flex flex-wrap items-center justify-center gap-4 opacity-50 text-xs font-bold text-slate-500">
+
+                <span class="bg-slate-100 px-3 py-1 rounded-lg">Instance: <span id="debug-appid"></span></span>
+
+                <span class="bg-slate-100 px-3 py-1 rounded-lg">Ready: 35 Items</span>
+
+            </div>
+
+        </footer>
+
+    </div>
+
+
+
+    <!-- Firebase SDKs -->
+
+    <script type="module">
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+        import { getFirestore, collection, addDoc, onSnapshot, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+
+
+        // Global State
+
+        const QUIZ_QUESTIONS = [
+
+            { id: 1, section: "A Letter to God", question: "Where was the house?", options: ["Near the river", "On the crest of a low hill", "In the forest", "Near the town"], correct: "On the crest of a low hill" },
+
+            { id: 2, section: "A Letter to God", question: "What did the ripe corn field promise?", options: ["Flood", "Drought", "Good harvest", "Storm"], correct: "Good harvest" },
+
+            { id: 3, section: "A Letter to God", question: "Why was Lencho looking at the north-east sky?", options: ["Birds flying", "Waiting for rain", "Watching clouds", "Looking for sun"], correct: "Waiting for rain" },
+
+            { id: 4, section: "A Letter to God", question: "Lencho’s words show:", options: ["Fear", "Anger", "Hope for rain", "Confusion"], correct: "Hope for rain" },
+
+            { id: 5, section: "A Letter to God", question: "“Mountains of clouds” is an example of:", options: ["Simile", "Metaphor", "Hyperbole", "Alliteration"], correct: "Hyperbole" },
+
+            { id: 6, section: "A Tiger in the Zoo", question: "Where is the tiger in the poem?", options: ["Forest", "River", "Zoo", "Jungle"], correct: "Zoo" },
+
+            { id: 7, section: "A Tiger in the Zoo", question: "Why does the tiger ignore visitors?", options: ["He is tired", "He is angry in captivity", "He is sleeping", "He is injured"], correct: "He is angry in captivity" },
+
+            { id: 8, section: "A Tiger in the Zoo", question: "How do we know the tiger is awake at night?", options: ["Roars loudly", "Walks around", "Hears voices and cars", "Breaks cage"], correct: "Hears voices and cars" },
+
+            { id: 9, section: "A Tiger in the Zoo", question: "What is common between tiger’s eyes and stars?", options: ["Brightness", "Size", "Colour", "Shape"], correct: "Brightness" },
+
+            { id: 10, section: "A Tiger in the Zoo", question: "The tiger’s condition described in the poem is one of:", options: ["Freedom", "Happiness", "Captivity", "Strength"], correct: "Captivity" },
+
+            { id: 11, section: "The Necklace", question: "What was Mme Loisel’s main problem initially?", options: ["No house", "No dress/jewellery", "No money", "No job"], correct: "No dress/jewellery" },
+
+            { id: 12, section: "The Necklace", question: "What was the speciality of the jewellery she borrowed?", options: ["Cheap", "Fake", "Admirable workmanship", "Broken"], correct: "Admirable workmanship" },
+
+            { id: 13, section: "The Necklace", question: "How did she feel at the ball?", options: ["Sad", "Proud", "Angry", "Afraid"], correct: "Proud" },
+
+            { id: 14, section: "The Necklace", question: "What specific item attracted her at Mme Forestier's?", options: ["Bracelet", "Ring", "Necklace", "Earrings"], correct: "Necklace" },
+
+            { id: 15, section: "The Necklace", question: "How would you describe her nature based on the story?", options: ["Honest", "Kind", "Greedy", "Brave"], correct: "Greedy" },
+
+            { id: 16, section: "Data Interpretation (Bar Chart)", question: "What does the bar chart show?", options: ["Weather", "Movie watching", "Shopping", "Travel"], correct: "Movie watching" },
+
+            { id: 17, section: "Data Interpretation (Bar Chart)", question: "Number of people watching movies on Monday:", options: ["25", "30", "35", "40"], correct: "35" },
+
+            { id: 18, section: "Data Interpretation (Bar Chart)", question: "On which day do the maximum number of people watch movies?", options: ["Friday", "Sunday", "Saturday", "Monday"], correct: "Saturday" },
+
+            { id: 19, section: "Data Interpretation (Bar Chart)", question: "What is the least number shown in the data?", options: ["15", "25", "35", "47"], correct: "25" },
+
+            { id: 20, section: "Data Interpretation (Bar Chart)", question: "Which statement is correct based on the chart?", options: ["Friday highest", "Saturday highest", "Thursday highest", "Monday highest"], correct: "Saturday highest" },
+
+            { id: 21, section: "Sequence Ordering", question: "What is the correct order of the sequence (a-b-c-d-e)?", options: ["b–a–c–d–e", "a–b–c–d–e", "c–a–b–d–e", "a–c–b–d–e"], correct: "a–b–c–d–e" },
+
+            { id: 22, section: "Grammar", question: "Combine using 'whose': Saranya is my friend. Her eyes are expressive.", options: ["Saranya whose eyes expressive", "Saranya is my friend whose eyes are expressive", "Saranya is friend whose eyes", "Saranya whose expressive"], correct: "Saranya is my friend whose eyes are expressive" },
+
+            { id: 23, section: "Grammar", question: "Identify the correct passive voice sentence:", options: ["Homework completed", "Homework had been completed", "Homework completes", "Homework was completing"], correct: "Homework had been completed" },
+
+            { id: 24, section: "Grammar", question: "Identify the correct reported speech: She said, 'I will join.'", options: ["She says she will join", "She told she will join", "She told that she would join", "She said she join"], correct: "She told that she would join" },
+
+            { id: 25, section: "Grammar", question: "Correct preposition: Rajesh is good ___ English.", options: ["in", "at", "on", "with"], correct: "at" },
+
+            { id: 26, section: "Grammar", question: "He drove ___ the bridge.", options: ["under", "over", "in", "at"], correct: "over" },
+
+            { id: 27, section: "Grammar", question: "Correct article: ___ moon looks beautiful.", options: ["a", "an", "the", "no article"], correct: "the" },
+
+            { id: 28, section: "Grammar", question: "Which shows a repeated action in the past?", options: ["I am playing", "I used to play", "I will play", "I play now"], correct: "I used to play" },
+
+            { id: 29, section: "Grammar", question: "Correct prefix for 'predictable':", options: ["in", "un", "dis", "re"], correct: "un" },
+
+            { id: 30, section: "Grammar", question: "Which is the correct spelling?", options: ["procesion", "procession", "proceson", "procesion"], correct: "procession" },
+
+            { id: 31, section: "Creative Writing", question: "Conversation writing belongs to which category?", options: ["Grammar", "Reading", "Creative writing", "Vocabulary"], correct: "Creative writing" },
+
+            { id: 32, section: "Creative Writing", question: "Diary writing primarily expresses:", options: ["Facts", "Emotions", "Grammar", "Rules"], correct: "Emotions" },
+
+            { id: 33, section: "Creative Writing", question: "What is essential for formal letter writing?", options: ["Format", "Drawing", "Poem", "Diagram"], correct: "Format" },
+
+           
